@@ -1296,7 +1296,7 @@ static bool bmp_parsetracereply(const char *reply, unsigned char *endpoint)
   if (!ok && strncmp(reply, "Trace enabled", 13) == 0) {
     ptr = strstr(reply, "USB EP");
     if (ptr != NULL) {
-      long ep = strtol(ptr + 6, NULL, 16);
+      long ep = strtol(ptr + 6, NULL, 10);
       if (endpoint != NULL)
         *endpoint = (unsigned char)(ep | 0x80); /* direction flag is not set in the reply */
       ok = true;
@@ -1330,6 +1330,7 @@ bool bmp_enabletrace(int async_bitrate, unsigned char *endpoint)
     } else {
       gdbrsp_xmit("qRcmd,traceswo", -1);
     }
+    rcvd = gdbrsp_recv(buffer, sizearray(buffer), 1000);
     rcvd = gdbrsp_recv(buffer, sizearray(buffer), 1000);
     if (rcvd > 0)
       break;
